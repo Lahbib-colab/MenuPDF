@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paradis du Fruit — Ma commande</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Caveat:wght@600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green:#204733;
+    --green-dark:#153426;
+    --green-tint:#EDF3EE;
+    --coral:#EE515B;
+    --coral-dark:#D93B47;
+    --coral-tint:#FBDCDF;
+    --gold:#B5852B;
+    --pink:#E8619B;
+    --purple:#8D7FCB;
+    --blue:#4FAEC9;
+    --teal:#3C9C93;
+    --leaf:#6FAE55;
+    --orange:#EE9142;
+    --paper:#FFFFFF;
+    --ink:#204733;
+    --line:#E3E9E2;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'DM Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    padding-bottom:110px;
+  }
+  header{
+    padding:26px 20px 20px;
+    text-align:center;
+    background:var(--paper);
+    border-bottom:3px solid var(--green);
+    position:relative;
+  }
+  header .eyebrow{
+    font-family:'DM Sans',sans-serif;
+    font-size:.68rem;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--gold);
+    font-weight:700;
+    margin-bottom:2px;
+  }
+  header h1{
+    margin:2px 0 0;
+    font-family:'Anton',sans-serif;
+    font-weight:400;
+    font-size:1.9rem;
+    letter-spacing:.02em;
+    color:var(--green);
+    text-transform:uppercase;
+    line-height:1;
+  }
+  header h1 span{color:var(--coral);}
+  header p{
+    margin:8px 0 0;
+    color:var(--green);
+    opacity:.6;
+    font-size:.82rem;
+    font-family:'Caveat',cursive;
+    font-weight:700;
+    font-size:1.05rem;
+  }
+  .container{
+    max-width:520px;
+    margin:0 auto;
+    padding:0 16px;
+  }
+  .formule-select{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin:20px 0 6px;
+  }
+  .formule-btn{
+    padding:13px 6px;
+    border:2px solid var(--line);
+    border-radius:10px;
+    background:var(--paper);
+    text-align:center;
+    cursor:pointer;
+    transition:.15s;
+  }
+  .formule-btn.active{
+    border-color:var(--accent, var(--coral));
+    background:color-mix(in srgb, var(--accent, var(--coral)) 12%, white);
+  }
+  .formule-btn .nom{
+    font-family:'Caveat',cursive;
+    font-weight:700;
+    font-size:1.15rem;
+    color:var(--accent, var(--green));
+    line-height:1.1;
+  }
+  .formule-btn .desc{
+    font-size:.7rem;
+    color:var(--green);
+    opacity:.65;
+    margin-top:2px;
+    font-weight:500;
+  }
+  .formule-btn.wide{grid-column:1 / -1;}
+  .section-title{
+    font-family:'Anton',sans-serif;
+    font-weight:400;
+    font-size:.95rem;
+    text-transform:uppercase;
+    letter-spacing:.03em;
+    color:var(--green);
+    margin:26px 0 10px 2px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .section-title::before{
+    content:"";
+    width:4px;height:16px;
+    background:var(--coral);
+    border-radius:2px;
+    display:inline-block;
+  }
+  .note{
+    font-size:.75rem;
+    color:var(--green);
+    opacity:.65;
+    margin:-6px 4px 14px;
+  }
+  .card{
+    background:var(--paper);
+    border:1.5px solid var(--line);
+    border-radius:12px;
+    padding:4px;
+    overflow:hidden;
+  }
+  .option{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:12px;
+    border-bottom:1px solid var(--line);
+  }
+  .option:last-child{border-bottom:none;}
+  .num-badge{
+    width:26px;
+    height:26px;
+    border-radius:50%;
+    background:var(--green-tint);
+    border:1.5px solid var(--green);
+    color:var(--green);
+    font-family:'Anton',sans-serif;
+    font-weight:400;
+    font-size:.8rem;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+  }
+  .num-badge.active{
+    background:var(--coral);
+    border-color:var(--coral-dark);
+    color:#fff;
+  }
+  .opt-text{flex:1;min-width:0;}
+  .opt-text .nom{
+    font-weight:700;
+    font-size:.88rem;
+    color:var(--green);
+  }
+  .opt-text .detail{
+    font-size:.74rem;
+    color:var(--green);
+    opacity:.6;
+    margin-top:1px;
+    font-weight:400;
+  }
+  .opt-text .supp-flag{
+    display:inline-block;
+    font-size:.64rem;
+    font-weight:700;
+    color:var(--coral-dark);
+    background:var(--coral-tint);
+    border-radius:5px;
+    padding:1px 6px;
+    margin-top:3px;
+  }
+  .stepper{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-shrink:0;
+  }
+  .stepper button{
+    width:28px;
+    height:28px;
+    border-radius:8px;
+    border:1.5px solid var(--green);
+    background:var(--paper);
+    font-size:1rem;
+    font-weight:700;
+    color:var(--green);
+    line-height:1;
+    cursor:pointer;
+  }
+  .stepper button:disabled{
+    opacity:.3;
+    cursor:not-allowed;
+  }
+  .stepper .qty{
+    min-width:16px;
+    text-align:center;
+    font-weight:700;
+    font-size:.9rem;
+    font-family:'Anton',sans-serif;
+    color:var(--green);
+  }
+  .accomp-option{
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+    padding:13px 12px;
+    border-bottom:1px solid var(--line);
+    cursor:pointer;
+  }
+  .accomp-option:last-child{border-bottom:none;}
+  .accomp-option input{display:none;}
+  .accomp-checkbox{
+    width:20px;
+    height:20px;
+    border-radius:50%;
+    border:2px solid var(--green);
+    flex-shrink:0;
+    margin-top:2px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .accomp-option input:checked + .accomp-num + .accomp-checkbox{
+    background:var(--green);
+    border-color:var(--green);
+  }
+  .accomp-option input:checked + .accomp-num + .accomp-checkbox::after{
+    content:"✓";
+    color:#fff;
+    font-size:12px;
+    font-weight:bold;
+  }
+  .accomp-num{
+    width:26px;
+    height:26px;
+    border-radius:50%;
+    background:var(--green-tint);
+    border:1.5px solid var(--green);
+    color:var(--green);
+    font-family:'Anton',sans-serif;
+    font-weight:400;
+    font-size:.8rem;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+    margin-top:1px;
+  }
+  .compteur{
+    text-align:right;
+    font-size:.8rem;
+    color:var(--green);
+    opacity:.7;
+    margin:6px 6px 0 0;
+  }
+  .compteur b{color:var(--coral-dark); opacity:1;}
+  .fixed-note{
+    background:var(--green-tint);
+    border:1.5px solid var(--line);
+    border-radius:10px;
+    padding:10px 12px;
+    font-size:.82rem;
+    color:var(--green);
+    margin-top:8px;
+  }
+  .summary-bar{
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    background:var(--paper);
+    border-top:2px solid var(--green);
+    padding:12px 16px calc(12px + env(safe-area-inset-bottom));
+  }
+  .summary-bar .inner{
+    max-width:520px;
+    margin:0 auto;
+  }
+  .summary-list{
+    font-size:.8rem;
+    color:var(--green);
+    opacity:.75;
+    margin-bottom:8px;
+    line-height:1.5;
+    max-height:70px;
+    overflow-y:auto;
+  }
+  .summary-list .empty{color:#a9b5ac;font-style:italic;}
+  .btn-annoncer{
+    width:100%;
+    background:var(--coral);
+    color:#fff;
+    border:none;
+    padding:14px;
+    border-radius:10px;
+    font-family:'Anton',sans-serif;
+    font-weight:400;
+    font-size:1.05rem;
+    letter-spacing:.02em;
+    text-transform:uppercase;
+    cursor:pointer;
+  }
+  .btn-annoncer:disabled{
+    background:#e3e3e0;
+    color:#aaa;
+  }
+  .overlay{
+    position:fixed;inset:0;
+    background:rgba(21,52,38,.6);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:10;
+  }
+  .overlay.show{display:flex;}
+  .ticket{
+    background:#fff;
+    border-radius:4px;
+    padding:26px 22px 18px;
+    max-width:380px;
+    width:100%;
+    text-align:left;
+    max-height:85vh;
+    overflow-y:auto;
+    position:relative;
+  }
+  .ticket::before, .ticket::after{
+    content:"";
+    position:absolute;
+    left:0; right:0;
+    height:14px;
+    background:
+      radial-gradient(circle at 8px 50%, transparent 7px, #fff 7.5px) repeat-x;
+    background-size:16px 14px;
+  }
+  .ticket::before{top:-7px;}
+  .ticket::after{bottom:-7px; transform:rotate(180deg);}
+  .ticket-header{
+    text-align:center;
+    margin-bottom:14px;
+    padding-bottom:12px;
+    border-bottom:2px dashed var(--line);
+  }
+  .ticket-header .logo{
+    font-family:'Anton',sans-serif;
+    font-weight:400;
+    font-size:1.2rem;
+    letter-spacing:.02em;
+    text-transform:uppercase;
+    color:var(--green);
+  }
+  .ticket-header .logo span{color:var(--coral);}
+  .ticket-header .sub{
+    font-size:.78rem;
+    color:var(--green);
+    opacity:.7;
+    margin-top:2px;
+    font-family:'Caveat',cursive;
+    font-weight:700;
+    font-size:1rem;
+  }
+  .ticket-actions{
+    display:flex;
+    gap:10px;
+    margin-top:14px;
+  }
+  .ticket-actions button{flex:1;}
+  .btn-pdf{
+    padding:12px;
+    border-radius:9px;
+    border:none;
+    background:var(--green);
+    color:#fff;
+    font-family:'Anton',sans-serif;
+    font-weight:400;
+    text-transform:uppercase;
+    font-size:.85rem;
+    letter-spacing:.02em;
+  }
+  .close-ticket{
+    padding:12px;
+    border-radius:9px;
+    border:1.5px solid var(--line);
+    background:#fff;
+    color:var(--green);
+    font-weight:700;
+  }
+  .ticket-num{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-width:30px;
+    height:30px;
+    padding:0 6px;
+    border-radius:8px;
+    background:var(--coral);
+    color:#fff;
+    font-family:'Anton',sans-serif;
+    font-weight:400;
+    font-size:.95rem;
+    margin-right:10px;
+    flex-shrink:0;
+  }
+  .ticket-row{
+    display:flex;
+    align-items:center;
+    padding:9px 0;
+    border-bottom:1px dashed var(--line);
+    font-size:.92rem;
+    color:var(--green);
+  }
+  .ticket-row .ticket-label{
+    flex:1;
+  }
+  .ticket-row .qty-tag{
+    font-weight:700;
+    color:var(--coral-dark);
+    margin-left:6px;
+  }
+  .ticket-row.supp{
+    background:var(--coral-tint);
+    border-radius:8px;
+    padding:9px 8px;
+  }
+  .ticket-row.supp .ticket-num{background:var(--coral-dark);}
+  .print-title{
+    display:none;
+  }
+  /* Accordéon "Toute la carte" */
+  .menu-divider{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:34px 4px 14px;
+  }
+  .menu-divider::before, .menu-divider::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:var(--line);
+  }
+  .menu-divider span{
+    font-family:'Caveat',cursive;
+    font-weight:700;
+    color:var(--coral);
+    font-size:1.3rem;
+    white-space:nowrap;
+  }
+  .accordion{
+    background:var(--paper);
+    border:1.5px solid var(--line);
+    border-left:4px solid var(--accent, var(--green));
+    border-radius:12px;
+    margin-bottom:10px;
+    overflow:hidden;
+  }
+  .accordion-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:14px 16px;
+    cursor:pointer;
+    background:var(--paper);
+  }
+  .accordion-head .cat-name{
+    font-family:'Caveat',cursive;
+    font-weight:700;
+    font-size:1.15rem;
+    letter-spacing:.01em;
+    color:var(--accent, var(--green));
+    display:flex;
+    align-items:center;
+    gap:8px;
+    text-transform:none;
+  }
+  .accordion-head .cat-count{
+    font-family:'DM Sans',sans-serif;
+    font-size:.72rem;
+    color:#fff;
+    background:var(--accent, var(--coral));
+    border-radius:20px;
+    padding:2px 8px;
+    font-weight:700;
+    margin-left:6px;
+  }
+  .accordion-head .chevron{
+    color:var(--green);
+    opacity:.5;
+    transition:transform .2s;
+    font-size:.8rem;
+  }
+  .accordion.open .chevron{transform:rotate(180deg);}
+  .accordion.open .accordion-head{
+    border-bottom:1.5px solid var(--line);
+  }
+  .accordion-body{
+    display:none;
+  }
+  .accordion.open .accordion-body{display:block;}
+  .menu-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:11px 14px;
+    border-bottom:1px solid var(--line);
+  }
+  .menu-item:last-child{border-bottom:none;}
+  .menu-item .opt-text{flex:1;min-width:0;}
+  .menu-item .opt-text .nom{font-weight:700;font-size:.86rem;color:var(--green);}
+  .menu-item .opt-text .detail{font-size:.72rem;color:var(--green);opacity:.6;margin-top:1px;font-weight:400;}
+  .menu-item .stepper button{width:26px;height:26px;}
+  @media print{
+    body *{visibility:hidden;}
+    .ticket, .ticket *{visibility:visible;}
+    .ticket{
+      position:absolute;
+      left:0; top:0;
+      width:100%;
+      max-width:100%;
+      box-shadow:none;
+      border-radius:0;
+    }
+    .ticket-actions, .close-ticket{display:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🍹 <span>Paradis</span> du Fruit</h1>
+  <p>Compose ta formule, montre l'écran au serveur</p>
+</header>
+
+<div class="container">
+
+  <div class="formule-select" id="formuleSelect">
+    <div class="formule-btn" data-formule="adameve" data-max="2" data-type="salee" style="--accent:var(--pink);">
+      <div class="nom">Adam & Eve</div>
+      <div class="desc">2 saveurs</div>
+    </div>
+    <div class="formule-btn active" data-formule="terrestre" data-max="3" data-type="salee" style="--accent:var(--leaf);">
+      <div class="nom">Paradis Terrestre</div>
+      <div class="desc">3 saveurs</div>
+    </div>
+    <div class="formule-btn" data-formule="celeste" data-max="4" data-type="salee" style="--accent:var(--gold);">
+      <div class="nom">Paradis Céleste</div>
+      <div class="desc">4 saveurs</div>
+    </div>
+    <div class="formule-btn wide" data-formule="paradisduparadis" data-max="8" data-type="partage" style="--accent:var(--teal);">
+      <div class="nom">🎉 Paradis du Paradis</div>
+      <div class="desc">8 saveurs à partager · idéal pour 2 · frites & coleslaw inclus</div>
+    </div>
+    <div class="formule-btn wide" data-formule="glace" data-max="2" data-type="glacee" style="--accent:var(--coral);">
+      <div class="nom">🍨 Glaces & Sorbets</div>
+      <div class="desc">1 ou 2 parfums au choix + crème fouettée</div>
+    </div>
+  </div>
+
+  <div class="section-title" id="saveursTitle">Vos saveurs</div>
+  <div class="note">Utilise les + / − pour la quantité de chaque saveur. Au-delà du nombre inclus dans la formule, la saveur est comptée en supplément (à préciser au serveur).</div>
+  <div class="card" id="saveursCard"></div>
+  <div class="compteur" id="compteur"></div>
+
+  <div id="accompSection">
+    <div class="section-title">Vos accompagnements</div>
+    <div class="card" id="accompCard"></div>
+  </div>
+
+  <div id="fixedAccompNote" class="fixed-note" style="display:none;">
+    Servi avec pommes frites & coleslaw (inclus)
+  </div>
+
+  <div class="menu-divider"><span>🌴 Toute la carte</span></div>
+  <div id="accordionWrap"></div>
+
+</div>
+
+<div class="summary-bar">
+  <div class="inner">
+    <div class="summary-list" id="summaryList"><span class="empty">Aucune sélection pour le moment</span></div>
+    <button class="btn-annoncer" id="btnAnnoncer" disabled>Annoncer au serveur</button>
+  </div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="ticket">
+    <div class="ticket-header">
+      <div class="logo">🍍 <span>Paradis</span> du Fruit</div>
+      <div class="sub" id="ticketFormule"></div>
+    </div>
+    <div id="ticketList"></div>
+    <div class="ticket-actions">
+      <button class="btn-pdf" id="btnPdf">📄 Exporter en PDF</button>
+      <button class="close-ticket" id="closeTicket">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Numérotation exacte de la carte "Vos saveurs"
+const saveurs = [
+  {nom:"Camembert croustillant au sésame"},
+  {nom:"Tartinade de thon au citron confit et son blini chaud"},
+  {nom:"Crémeux de poulet miel & curry et focaccia"},
+  {nom:"Tartinade de saumon à l'aneth et son blini chaud"},
+  {nom:"Pita toastée, crémeux de Chèvre, miel, noix et épinards"},
+  {nom:"Pita toastée, tartinade de thon au citron confit"},
+  {nom:"Œufs durs, mayonnaise parfumée à la truffe d'été et ciboulette"},
+  {nom:"Crispy de poulet aux céréales et sauce spicy mayo"},
+  {nom:"Pita toastée, dinde fumée, pomme et Cheddar fondu"},
+  {nom:"Pita toastée, poulet miel & curry, poivrons et Cheddar"},
+  {nom:"2 Brochettes de poulet marinées façon Le Paradis du Fruit"},
+  {nom:"Mini salade Caesar, crispy de poulet, Grana Padano AOP et sauce Caesar"},
+  {nom:"Pastèque en dés, Feta marinée et menthe fraîche"},
+  {nom:"Melon jaune en dés, Mozzarella Fior di Latte et pistou"},
+  {nom:"Demi avocat, vinaigrette aux agrumes et herbes fraîches"},
+  {nom:"Mozzarella Fior Di Latte, tomates multicolores et condiment tomate-aneth"},
+  {nom:"Mini Fish & Chips (limande) et sauce tartare"},
+  {nom:"Pita toastée, Mozzarella Fior Di Latte, pistou, poivron rôti, roquette et chutney de tomates"},
+  {nom:"Saumon fumé, sauce crémeuse à l'aneth et son blini chaud"},
+  {nom:"Crevettes panko croustillantes et sauce sweet chili"},
+  {nom:"Pita toastée, saumon fumé, Cream Cheese et aneth"},
+  {nom:"2 Brochettes de saumon au sésame et sauce gravlax"},
+  {nom:"Demi avocat, crevettes et sauce spicy mayo"},
+];
+
+// Numérotation exacte de la carte "Vos accompagnements"
+const accompagnements = [
+  {nom:"Pommes frites (sauce cheddar dispo)"},
+  {nom:"Riz vapeur aux petits légumes"},
+  {nom:"Coleslaw"},
+  {nom:"Mesclun et vinaigrette aux agrumes"},
+  {nom:"Haricots verts croustillants aux épices cajun"},
+  {nom:"Quinoa & boulgour à la menthe fraîche et sauce thaï"},
+];
+
+// Glaces & Sorbets (liste de la carte, non numérotée à l'origine)
+const parfumsGlace = [
+  {nom:"Vanille de Madagascar", detail:"Glace"},
+  {nom:"Chocolat noir Guanaja", detail:"Glace"},
+  {nom:"Pistache de Sicile", detail:"Glace"},
+  {nom:"Nougat de Montélimar", detail:"Glace"},
+  {nom:"Noix de coco au lait de coco", detail:"Glace"},
+  {nom:"Framboise et Passion du Pérou", detail:"Sorbet"},
+  {nom:"Mangue Alphonso d'Inde", detail:"Sorbet"},
+  {nom:"Fraises Senga et fraises des bois", detail:"Sorbet"},
+];
+
+const formuleLabels = {
+  adameve: "Adam & Eve",
+  terrestre: "Paradis Terrestre",
+  celeste: "Paradis Céleste",
+  paradisduparadis: "Paradis du Paradis (à partager)",
+  glace: "Glaces & Sorbets",
+};
+
+let maxSaveurs = 3;
+let formuleKey = "terrestre";
+let formuleType = "salee";
+let currentList = saveurs;
+const saveurQty = new Map(); // index -> quantité
+let selectedAccomp = null;
+
+function totalQty(){
+  let t = 0;
+  saveurQty.forEach(q => t += q);
+  return t;
+}
+
+const saveursCard = document.getElementById('saveursCard');
+const accompCard = document.getElementById('accompCard');
+const compteurEl = document.getElementById('compteur');
+const summaryList = document.getElementById('summaryList');
+const btnAnnoncer = document.getElementById('btnAnnoncer');
+const accompSection = document.getElementById('accompSection');
+const fixedAccompNote = document.getElementById('fixedAccompNote');
+const saveursTitle = document.getElementById('saveursTitle');
+
+function renderSaveurs(){
+  saveursCard.innerHTML = '';
+  currentList.forEach((s, i) => {
+    const qty = saveurQty.get(i) || 0;
+    const tot = totalQty();
+    const atFormuleMax = tot >= maxSaveurs && qty === 0; // pas encore choisie et plafond formule atteint -> ajouter = direct supplément, on autorise quand même
+    const label = document.createElement('div');
+    label.className = 'option';
+    const detailHtml = s.detail ? `<div class="detail">${s.detail}</div>` : '';
+    const suppQty = Math.max(0, (tot - maxSaveurs));
+    // Détermine si CETTE ligne contribue au supplément (les dernières unités ajoutées au-delà du max)
+    let itemInSupp = false;
+    if(qty > 0 && tot > maxSaveurs){
+      itemInSupp = true; // simplifié : signalé dès que le total dépasse le max et que cette ligne a une quantité
+    }
+    const suppHtml = itemInSupp ? `<div class="supp-flag">peut inclure du supplément</div>` : '';
+    label.innerHTML = `
+      <div class="num-badge ${qty>0?'active':''}">${i + 1}</div>
+      <div class="opt-text">
+        <div class="nom">${s.nom}</div>
+        ${detailHtml}
+        ${suppHtml}
+      </div>
+      <div class="stepper">
+        <button type="button" data-action="minus" data-i="${i}" ${qty===0?'disabled':''}>−</button>
+        <div class="qty">${qty}</div>
+        <button type="button" data-action="plus" data-i="${i}">+</button>
+      </div>`;
+    label.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const idx = parseInt(btn.dataset.i);
+        const current = saveurQty.get(idx) || 0;
+        if(btn.dataset.action === 'plus'){
+          saveurQty.set(idx, current + 1);
+        } else {
+          const next = current - 1;
+          if(next <= 0){ saveurQty.delete(idx); } else { saveurQty.set(idx, next); }
+        }
+        renderSaveurs();
+        updateSummary();
+      });
+    });
+    saveursCard.appendChild(label);
+  });
+  const lbl = formuleType === 'glacee' ? 'parfums' : 'saveurs';
+  const tot = totalQty();
+  const suppCount = Math.max(0, tot - maxSaveurs);
+  compteurEl.innerHTML = suppCount > 0
+    ? `<b>${tot}</b> / ${maxSaveurs} ${lbl} inclus &nbsp;·&nbsp; <span style="color:#c2410c;">+${suppCount} en supplément</span>`
+    : `<b>${tot}</b> / ${maxSaveurs} ${lbl} sélectionnées`;
+}
+
+function renderAccomp(){
+  accompCard.innerHTML = '';
+  accompagnements.forEach((a, i) => {
+    const label = document.createElement('label');
+    label.className = 'accomp-option';
+    label.innerHTML = `
+      <input type="checkbox" data-i="${i}" ${selectedAccomp === i ? 'checked' : ''}>
+      <div class="accomp-num">${i + 1}</div>
+      <div class="accomp-checkbox"></div>
+      <div class="opt-text"><div class="nom">${a.nom}</div></div>`;
+    label.querySelector('input').addEventListener('change', e => {
+      selectedAccomp = e.target.checked ? i : null;
+      renderAccomp();
+      updateSummary();
+    });
+    accompCard.appendChild(label);
+  });
+}
+
+function updateSummary(){
+  const items = [];
+  const tot = totalQty();
+  saveurQty.forEach((qty, i) => {
+    const label = qty > 1 ? `x${qty} ` : '';
+    items.push(`n°${i+1} ${label}${currentList[i].nom}`.trim());
+  });
+  if(formuleType === 'salee' && selectedAccomp !== null) items.push('+ n°' + (selectedAccomp+1) + ' ' + accompagnements[selectedAccomp].nom);
+  if(formuleType === 'partage') items.push('+ Pommes frites & Coleslaw (inclus)');
+  if(formuleType === 'glacee') items.push('+ crème fouettée');
+  const suppCount = Math.max(0, tot - maxSaveurs);
+  if(suppCount > 0) items.push(`⚠️ +${suppCount} en supplément`);
+
+  const menuCount = menuTotalCount();
+  if(menuCount > 0) items.push(`+ ${menuCount} article(s) de la carte`);
+
+  if(items.length === 0){
+    summaryList.innerHTML = '<span class="empty">Aucune sélection pour le moment</span>';
+  } else {
+    summaryList.innerHTML = items.join(' · ');
+  }
+
+  const saveurOk = tot === 0 || tot >= maxSaveurs; // formule complète OU pas de formule choisie
+  const accompOk = formuleType !== 'salee' || tot === 0 || selectedAccomp !== null;
+  const hasAnything = tot > 0 || menuCount > 0;
+  btnAnnoncer.disabled = !(saveurOk && accompOk && hasAnything);
+}
+
+document.querySelectorAll('.formule-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.formule-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    maxSaveurs = parseInt(btn.dataset.max);
+    formuleKey = btn.dataset.formule;
+    formuleType = btn.dataset.type;
+    currentList = formuleType === 'glacee' ? parfumsGlace : saveurs;
+    saveursTitle.textContent = formuleType === 'glacee' ? 'Vos parfums' : 'Vos saveurs';
+    accompSection.style.display = formuleType === 'salee' ? 'block' : 'none';
+    fixedAccompNote.style.display = formuleType === 'partage' ? 'block' : 'none';
+    saveurQty.clear();
+    selectedAccomp = null;
+    renderSaveurs();
+    updateSummary();
+  });
+});
+
+document.getElementById('btnAnnoncer').addEventListener('click', () => {
+  document.getElementById('ticketFormule').textContent = formuleLabels[formuleKey];
+  const wrap = document.getElementById('ticketList');
+  wrap.innerHTML = '';
+  const tagLabel = formuleType === 'glacee' ? 'Parfum' : 'Saveur';
+  const tot = totalQty();
+
+  saveurQty.forEach((qty, i) => {
+    const row = document.createElement('div');
+    row.className = 'ticket-row';
+    const qtyTag = qty > 1 ? `<span class="qty-tag">× ${qty}</span>` : '';
+    row.innerHTML = `<div class="ticket-num">${i+1}</div><div class="ticket-label">${currentList[i].nom}${qtyTag}<br><small style="color:#8a7860;">${tagLabel} n°${i+1}</small></div>`;
+    wrap.appendChild(row);
+  });
+
+  if(formuleType === 'salee' && selectedAccomp !== null){
+    const row = document.createElement('div');
+    row.className = 'ticket-row';
+    row.innerHTML = `<div class="ticket-num">${selectedAccomp+1}</div><div class="ticket-label">${accompagnements[selectedAccomp].nom}<br><small style="color:#8a7860;">Accompagnement n°${selectedAccomp+1}</small></div>`;
+    wrap.appendChild(row);
+  }
+
+  if(formuleType === 'partage'){
+    const row = document.createElement('div');
+    row.className = 'ticket-row';
+    row.innerHTML = `<div class="ticket-num">✓</div><div class="ticket-label">Pommes frites & Coleslaw<br><small style="color:#8a7860;">Inclus</small></div>`;
+    wrap.appendChild(row);
+  }
+
+  if(formuleType === 'glacee'){
+    const row = document.createElement('div');
+    row.className = 'ticket-row';
+    row.innerHTML = `<div class="ticket-num">✓</div><div class="ticket-label">Crème fouettée<br><small style="color:#8a7860;">Inclus</small></div>`;
+    wrap.appendChild(row);
+  }
+
+  const suppCount = Math.max(0, tot - maxSaveurs);
+  if(suppCount > 0){
+    const row = document.createElement('div');
+    row.className = 'ticket-row supp';
+    row.innerHTML = `<div class="ticket-num">⚠️</div><div class="ticket-label" style="color:#c2410c;font-weight:700;">${suppCount} saveur(s) en supplément<br><small style="color:#c2410c;font-weight:400;">au-delà des ${maxSaveurs} incluses dans la formule</small></div>`;
+    wrap.appendChild(row);
+  }
+
+  if(menuItemQty.size > 0){
+    const divider = document.createElement('div');
+    divider.style.cssText = 'font-family:Baloo 2,sans-serif;font-weight:700;color:#0E7C86;font-size:.8rem;margin:14px 0 4px;text-transform:uppercase;letter-spacing:.04em;';
+    divider.textContent = '🌴 Reste de la carte';
+    wrap.appendChild(divider);
+
+    menuItemQty.forEach((qty, key) => {
+      const [ci, ii] = key.split(':').map(Number);
+      const it = menuCategories[ci].items[ii];
+      const row = document.createElement('div');
+      row.className = 'ticket-row';
+      const qtyLabel = qty > 1 ? `<span class="qty-tag">× ${qty}</span>` : '';
+      row.innerHTML = `<div class="ticket-num" style="background:var(--lagoon);">${menuCategories[ci].icon}</div><div class="ticket-label">${it.nom}${qtyLabel}<br><small style="color:#8a7860;">${menuCategories[ci].name}</small></div>`;
+      wrap.appendChild(row);
+    });
+  }
+
+  document.getElementById('overlay').classList.add('show');
+});
+
+document.getElementById('btnPdf').addEventListener('click', () => {
+  window.print();
+});
+
+document.getElementById('closeTicket').addEventListener('click', () => {
+  document.getElementById('overlay').classList.remove('show');
+});
+
+// ===== Reste de la carte (hors "Assiette à composer") =====
+const menuCategories = [
+  {icon:"🥤", name:"Bar à fruits & légumes", items:[
+    {nom:"Citron pressé", detail:"Servi avec eau et sucre en poudre"},
+    {nom:"Grand Soleil", detail:"Orange ou pamplemousse pressé · 40cl"},
+    {nom:"Double Force", detail:"Pomme Bio, ananas, basilic"},
+    {nom:"Apple Bunny", detail:"Pomme Bio, carotte"},
+    {nom:"Tornade Santé", detail:"Pomme Bio, concombre, menthe"},
+    {nom:"Potion Magique", detail:"Carotte, ananas, coriandre"},
+    {nom:"Caro'T Detox", detail:"Carotte, orange, gingembre"},
+    {nom:"Green Attitude", detail:"Pomme Bio, kiwi, menthe"},
+    {nom:"Super Green", detail:"Épinard, kale, pomme Bio, persil"},
+    {nom:"Veggie Detox", detail:"Concombre, kale, menthe, jus aloe vera"},
+  ]},
+  {icon:"🍹", name:"Cocktails Stars", items:[
+    {nom:"Vitaminé", detail:"Citron, orange, pamplemousse, kiwi"},
+    {nom:"Rouge Parfait", detail:"Framboise, fraise, ananas"},
+    {nom:"Yoyo Corail", detail:"Banane, mangue, fraise, yolita"},
+    {nom:"Rose Paradis", detail:"Fraise, banane, orange, citron"},
+    {nom:"Mangue Énergie", detail:"Mangue, clémentine corse, citron vert"},
+    {nom:"La Panthère Rose", detail:"Framboise, litchi, grenade"},
+    {nom:"Verger Tropical", detail:"Pêche jaune, abricot, passion"},
+    {nom:"Caresse Antillaise", detail:"Goyave, ananas-verveine, citron vert"},
+    {nom:"Fleur d'Asie", detail:"Litchi, framboise-cranberry-hibiscus"},
+    {nom:"Joséphine Baker", detail:"Passion, mangue, coco"},
+  ]},
+  {icon:"🍧", name:"Granités & Elixirs du Paradis", items:[
+    {nom:"Lemon Nana", detail:"Granité citron jaune, feuilles de menthe · 40cl"},
+    {nom:"Rouge Orangeade", detail:"Granité fraise, orange · 40cl"},
+    {nom:"Passiflora", detail:"Granité passion, citron vert · 40cl"},
+    {nom:"Green Ice't", detail:"Thé vert glacé à la menthe fraîche · 40cl"},
+    {nom:"Cure Détox", detail:"Grenade, cranberry, fruits rouges · 40cl"},
+    {nom:"Dans ta Bulle XXL !", detail:"Tonic · citron jaune, concombre, orange, ananas-verveine ou framboise-cranberry-hibiscus · 45cl"},
+  ]},
+  {icon:"🍸", name:"Mixologie & Alcools", items:[
+    {nom:"Basilic Instinct", detail:"Gin Bombay Sapphire, concombre, basilic, citron jaune"},
+    {nom:"L'Original Margarita", detail:"Tequila, triple sec, citron vert · 25cl"},
+    {nom:"Margarita Mangue", detail:"Tequila et sorbet mangue Alphonso · 25cl"},
+    {nom:"Danse Joséphine", detail:"Rhum, mangue, passion, coco · 25cl"},
+    {nom:"Daïquiri Passion & Framboise", detail:"Rhum et sorbet framboise-passion · 25cl"},
+    {nom:"Daïquiri Coco", detail:"Rhum et glace coco au lait de coco · 25cl"},
+    {nom:"Mojito", detail:"Rhum Bacardi · 27cl"},
+    {nom:"Mojito Fruit", detail:"Rhum, au choix fraise/framboise/passion/mangue · 27cl"},
+    {nom:"Apple Virgin Mojito", detail:"Sans alcool · 35cl"},
+    {nom:"Apple Virgin Mojito Fruit", detail:"Sans alcool, au choix · 35cl"},
+    {nom:"L'Original Spritz", detail:"Apérol, Prosecco, eau pétillante · 25cl"},
+    {nom:"Hugo Spritz", detail:"St-Germain, Prosecco, eau pétillante · 25cl"},
+    {nom:"Pink Spritz", detail:"Apérol, Prosecco, sirop pamplemousse · 25cl"},
+    {nom:"Passion Spritz", detail:"Apérol, Prosecco, passion · 25cl"},
+    {nom:"Piña Colada Originale", detail:"Rhum, ananas, coco · 25cl"},
+    {nom:"Piña Colada La Fragola", detail:"Rhum, ananas, coco, fraise · 25cl"},
+  ]},
+  {icon:"🍺", name:"Bières, cidre, vins & eaux", items:[
+    {nom:"Vittel", detail:"50cl ou 1L"},
+    {nom:"San Pellegrino", detail:"50cl ou 1L"},
+    {nom:"Gallia Champ Libre", detail:"Bière blonde non filtrée 5,8° · 33cl"},
+    {nom:"Gallia Nouveau Western IPA", detail:"Notes d'agrumes 6° · 25cl"},
+    {nom:"Cidre La Mordue", detail:"L'original 6° · 27,5cl"},
+    {nom:"Vin blanc", detail:"AOP Côtes du Rhône · 14/25/75cl"},
+    {nom:"Vin rouge", detail:"AOP Côtes du Rhône · 14/25/75cl"},
+    {nom:"Vin rosé", detail:"AOP Côtes de Provence · 14/25/75cl"},
+  ]},
+  {icon:"🥪", name:"Bonjour Paradis ! (pitas & avocado toasts)", items:[
+    {nom:"Pita toastée au choix", detail:"Thon citron confit, chèvre miel noix, dinde fumée pomme cheddar, poulet miel curry, saumon fumé aneth, ou mozzarella pistou"},
+    {nom:"Planche de 3 pitas", detail:"Choisissez-en 3 et partagez-les (ou pas !)"},
+    {nom:"Avocado Toast Le Veggie", detail:"Focaccia, avocat, œufs pochés, feta, grenade, multigraines"},
+    {nom:"Avocado Toast Le Saumon", detail:"Focaccia, avocat, courgettes marinées, cream cheese aneth, saumon fumé"},
+  ]},
+  {icon:"🥗", name:"Salades", items:[
+    {nom:"La vie est belle en salade", detail:"Romaine, tomates cerises, edamames, carottes, focaccia au pistou"},
+    {nom:"Paradis Bonheur", detail:"Poulet mariné 4 épices, ananas, sésame, oignons frits, sauce thaï"},
+    {nom:"Caesar au Paradis", detail:"Crispy de poulet, œuf dur, croûtons, Grana Padano, sauce Caesar"},
+    {nom:"Tutti Salata", detail:"Melon, pastèque, feta marinée, ananas, passion, grenade"},
+    {nom:"Mama Saumon", detail:"2 brochettes de saumon, ananas, grenade, sauce gravlax"},
+    {nom:"Pistou Presto", detail:"Burrata fondante, tomates d'antan, courgettes marinées, pistou"},
+  ]},
+  {icon:"🍞", name:"Chaud le Toast !", items:[
+    {nom:"Goody Woody", detail:"Crémeux poulet miel curry, épinard, poivrons, cheddar fondu, frites"},
+    {nom:"C'Bon", detail:"Tartinade de thon, mozzarella, pistou, courgette, poivron rôti, frites"},
+    {nom:"Banquise Sauvage", detail:"Tartinade saumon aneth, saumon fumé, œuf poché, frites"},
+    {nom:"Deli Mix Pastrami", detail:"Dinde, pastrami de bœuf, cheddar fondu, coleslaw, frites"},
+  ]},
+  {icon:"🍔", name:"Street Paradis (burgers & fish&chips)", items:[
+    {nom:"Fish & Chips", detail:"Merlu du Cap croustillant, frites, mesclun, sauce tartare"},
+    {nom:"Pastrami Burger", detail:"Pain curcuma, pastrami bœuf, sauce cheddar, tomate, frites"},
+    {nom:"Veggie Burger", detail:"Galette de petits pois, cheddar, avocat, sauce tartare, frites"},
+    {nom:"Sir Homard Lobster", detail:"Chair de homard américain, coleslaw, avocat, mayonnaise homard, frites"},
+  ]},
+  {icon:"🍲", name:"Les Marmites Magiques !", items:[
+    {nom:"Dolce Paradisio", detail:"Gnocchis, chutney de tomates, mozzarella, Grana Padano, olives"},
+    {nom:"Citron Beldi", detail:"Poulet citron confit, poivron, aubergine, quinoa & boulgour à la menthe"},
+    {nom:"Mama Corail", detail:"Merlu & crevettes, sauce tom yum, ananas poêlés, riz vapeur légumes"},
+  ]},
+  {icon:"🍰", name:"Desserts créations", items:[
+    {nom:"Fondant cœur coulant", detail:"Chocolat sans gluten, crème anglaise, crème fouettée"},
+    {nom:"Salade de fruits Jolie Jolie", detail:"Découpe minute et pulpe de passion"},
+    {nom:"Ma Jolie Mangue", detail:"Mangue en dés, pulpe de passion, sorbet mangue"},
+    {nom:"Açaï Bowl Paradisiaque", detail:"Açaï, yaourt, fraises, framboises, myrtilles, muesli"},
+    {nom:"Île Meringuée", detail:"Tarte citron, meringue italienne, cœur glacé framboise-passion"},
+    {nom:"Ta-Tatin", detail:"Tarte caramélisée aux pommes, crème fraîche, sauce caramel"},
+    {nom:"New York Cheesecake", detail:"Purée de mangue, sauce caramel-vanille, crème fouettée"},
+  ]},
+  {icon:"🧇", name:"Gaufres, choux & pancakes", items:[
+    {nom:"Gaufre Nutella Lover", detail:"Nutella et crème fouettée"},
+    {nom:"Gaufre Dolce Banana", detail:"Banane, sauce caramel-vanille, crème fouettée"},
+    {nom:"Gaufre Ramène ta Fraise", detail:"Fraises fraîches, coulis de fruits, crème fouettée"},
+    {nom:"Gaufres géantes à partager", detail:"3 pièces · choco-Nutella, fraises, banane, caramel-vanille"},
+    {nom:"Trop Choux Beaucoup", detail:"P'tit chou, sorbet fraises Senga, coulis multi-fruits"},
+    {nom:"Trop Choux À la Folie", detail:"P'tit chou, sorbet mangue Alphonso, purée de mangue"},
+    {nom:"Trop Choux Passionnément", detail:"P'tit chou, sorbet framboise-passion, coulis multi-fruits"},
+    {nom:"Pancake L'Original", detail:"3 pièces · American Syrup, crème fouettée"},
+    {nom:"Pancake Le Banana", detail:"Banane, caramel-vanille, amandes coco crunch"},
+    {nom:"Pancake Le Crazy Fruit", detail:"Multi-fruits et coulis de fruits"},
+    {nom:"Pancake Le Gourmand", detail:"Fraises, framboises, myrtilles, Nutella, pistache crunch"},
+  ]},
+  {icon:"🎂", name:"Gros desserts (à partager)", items:[
+    {nom:"Chocolat Mon Amour !", detail:"Gâteau chocolat tiède, banane caramélisée, crème fouettée · seul ou pour 2"},
+    {nom:"Profiterole Très Folle", detail:"Chou XXL, glace vanille, sauce choco-Nutella, banane"},
+    {nom:"Fondue de fruits Très Chocolat", detail:"Découpe de fruits, gaufres, chamallows, sauce choco-Nutella"},
+  ]},
+  {icon:"🍨", name:"Coupes glacées du Paradis", items:[
+    {nom:"Igloo", detail:"Esquimau vanille ou coco, coque chocolat, smarties"},
+    {nom:"Double Choco", detail:"Glace chocolat noir, crème de nougat, fondant choco, sauce choco-noisette"},
+    {nom:"Pistachio", detail:"Glace pistache de Sicile, pistache crunch, sauce choco-noisette"},
+    {nom:"Nougatella", detail:"Glace vanille, crème de nougat, Nutella, banane, fondant choco"},
+    {nom:"Cornet d'Amour Surprise", detail:"Craquant Nutella, fraises & banane, 1 parfum au choix"},
+    {nom:"Fraise Melba Très Fraise", detail:"Glace vanille, sorbet fraises Senga, coulis de fruits"},
+    {nom:"Aphrodite", detail:"Glace vanille, glace nougat, crème de nougat, amandes grillées, caramel"},
+    {nom:"Extra Île Parad'Ice", detail:"Découpe de fruits, coulis, 2 parfums de glace ou sorbet au choix"},
+    {nom:"Banana Split Vintage", detail:"Glace vanille, chocolat, sorbet fraise, banane, sauce choco-noisette"},
+  ]},
+  {icon:"🍦", name:"Yolita d'Amour (frozen yogurt)", items:[
+    {nom:"Yolita La Môme", detail:"2 toppings au choix : mangue, banane, kiwi, fraise, muesli..."},
+    {nom:"Yolita La Belle", detail:"2 toppings au choix, dont framboise en supplément"},
+  ]},
+  {icon:"☕", name:"Coffee Shop & boissons chaudes", items:[
+    {nom:"Expresso, allongé ou décaféiné"},
+    {nom:"Café noisette"},
+    {nom:"Café américain ou café au lait"},
+    {nom:"Double expresso"},
+    {nom:"Cappuccino ou café viennois"},
+    {nom:"Latté macchiato"},
+    {nom:"L'Incroyable", detail:"Chocolat chaud Valrhona, chamallows, crème fouettée"},
+    {nom:"Caramelito", detail:"Lait chaud Nutella, sauce caramel-vanille, Carambar"},
+    {nom:"Chaï Latté", detail:"Lait chaud aux épices indiennes, crème fouettée"},
+    {nom:"Matcha", detail:"Lait chaud au thé matcha, crème fouettée"},
+  ]},
+  {icon:"🍵", name:"Thés & infusions bio", items:[
+    {nom:"Aquarosa", detail:"Fruits rouges et hibiscus"},
+    {nom:"Rooibos vanille"},
+    {nom:"Vert gingembre-citron"},
+    {nom:"BB Detox", detail:"Thé vert, maté, plantes, pamplemousse"},
+    {nom:"English Breakfast", detail:"Thés noirs d'Asie"},
+    {nom:"Anastasia", detail:"Thé noir, bergamote, citron, fleur d'oranger"},
+    {nom:"Thé vert du Paradis", detail:"À la menthe fraîche"},
+  ]},
+];
+
+const menuItemQty = new Map(); // "catIndex:itemIndex" -> qty
+const openCategories = new Set();
+
+function menuTotalCount(){
+  let t = 0;
+  menuItemQty.forEach(q => t += q);
+  return t;
+}
+
+const catColors = ['leaf','blue','orange','coral','gold','gold','leaf','orange','coral','teal','pink','purple','coral','orange','teal','gold','teal'];
+function renderAccordion(){
+  const wrap = document.getElementById('accordionWrap');
+  wrap.innerHTML = '';
+  menuCategories.forEach((cat, ci) => {
+    let catCount = 0;
+    menuItemQty.forEach((q, key) => { if(key.startsWith(ci + ':')) catCount += q; });
+
+    const box = document.createElement('div');
+    box.className = 'accordion' + (openCategories.has(ci) ? ' open' : '');
+    const colorVar = catColors[ci % catColors.length] || 'green';
+    box.style.setProperty('--accent', `var(--${colorVar})`);
+
+    const head = document.createElement('div');
+    head.className = 'accordion-head';
+    head.innerHTML = `<div class="cat-name">${cat.icon} ${cat.name}${catCount > 0 ? `<span class="cat-count">${catCount}</span>` : ''}</div><div class="chevron">▾</div>`;
+    head.addEventListener('click', () => {
+      if(openCategories.has(ci)) openCategories.delete(ci); else openCategories.add(ci);
+      renderAccordion();
+    });
+
+    const body = document.createElement('div');
+    body.className = 'accordion-body';
+    cat.items.forEach((it, ii) => {
+      const key = ci + ':' + ii;
+      const qty = menuItemQty.get(key) || 0;
+      const row = document.createElement('div');
+      row.className = 'menu-item';
+      const detailHtml = it.detail ? `<div class="detail">${it.detail}</div>` : '';
+      row.innerHTML = `
+        <div class="opt-text"><div class="nom">${it.nom}</div>${detailHtml}</div>
+        <div class="stepper">
+          <button type="button" data-action="minus" ${qty===0?'disabled':''}>−</button>
+          <div class="qty">${qty}</div>
+          <button type="button" data-action="plus">+</button>
+        </div>`;
+      row.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const current = menuItemQty.get(key) || 0;
+          if(btn.dataset.action === 'plus'){
+            menuItemQty.set(key, current + 1);
+          } else {
+            const next = current - 1;
+            if(next <= 0){ menuItemQty.delete(key); } else { menuItemQty.set(key, next); }
+          }
+          renderAccordion();
+          updateSummary();
+        });
+      });
+      body.appendChild(row);
+    });
+
+    box.appendChild(head);
+    box.appendChild(body);
+    wrap.appendChild(box);
+  });
+}
+
+renderSaveurs();
+renderAccomp();
+renderAccordion();
+updateSummary();
+</script>
+
+</body>
+</html>
